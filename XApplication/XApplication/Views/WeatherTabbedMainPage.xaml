@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:v="clr-namespace:XApplication.Views"
+            xmlns:vm="clr-namespace:XApplication.ViewModels" 
+            xmlns:selector="clr-namespace:XApplication.Other"
+            x:Class="XApplication.Views.WeatherTabbedMainPage"
+            ItemsSource="{Binding ViewModels}">
+    <TabbedPage.BindingContext>
+        <vm:WeatherTabbedViewModel/>
+    </TabbedPage.BindingContext>
+    <TabbedPage.Resources>
+        <DataTemplate x:Key="WeatherTemplate" x:DataType="{x:Type vm:WeatherMainViewModel}">
+            <v:WeatherMainPage Title="{Binding Location.Name}" BindingContext="{Binding .}"/>
+        </DataTemplate>
+        <DataTemplate x:Key="NewLocationTemplate" x:DataType="{x:Type vm:NewLocationViewModel}">
+            <v:NewLocationPage Title="Add" BindingContext="{Binding .}" IconImageSource="location.png"/>
+        </DataTemplate>
+    </TabbedPage.Resources>
+    <TabbedPage.ItemTemplate>
+        <selector:WeatherTemplateSelector NewLocationTemplate="{StaticResource NewLocationTemplate}" WeatherTemplate="{StaticResource WeatherTemplate}"/>
+    </TabbedPage.ItemTemplate>
+</TabbedPage>

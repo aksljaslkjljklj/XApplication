@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:XApplication.ViewModels"
+             x:Class="XApplication.Views.LocationDetailsPage"
+             Shell.PresentationMode="ModalAnimated">
+    <ContentPage.BindingContext>
+        <vm:LocationDetailsViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid Padding="10">
+            <ImageButton Source="previous.png" 
+                         WidthRequest="48" 
+                         HeightRequest="48" 
+                         HorizontalOptions="Start" 
+                         VerticalOptions="Start" 
+                         BackgroundColor="{StaticResource Blue}" 
+                         Grid.Row="0" 
+                         Command="{Binding BackCommand}"
+                         Padding="10"/>
+            <Frame VerticalOptions="Center" HorizontalOptions="Center" Padding="10,25" CornerRadius="5">
+                <StackLayout>
+                    <StackLayout.Resources>
+                        <Style TargetType="Label">
+                            <Setter Property="FontSize" Value="Large"/>
+                        </Style>
+                    </StackLayout.Resources>
+                    <Label Text="{Binding Location.Country,StringFormat='Country: {0}'}"/>
+                    <Label Text="{Binding Location.Region,StringFormat='Region: {0}'}"/>
+                    <Label Text="{Binding Location.Name,StringFormat='City: {0}'}"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding Location.Lon,StringFormat='Longitude: {0}'}"/>
+                        <Label Text="{Binding Location.Lat,StringFormat='Latitude: {0}'}"/>
+                    </StackLayout>
+                </StackLayout>
+            </Frame>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

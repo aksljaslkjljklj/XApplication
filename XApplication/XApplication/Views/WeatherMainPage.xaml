@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:XApplication.ViewModels"
+             xmlns:maps="clr-namespace:Xamarin.Forms.Maps;assembly=Xamarin.Forms.Maps"
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit" 
+             xmlns:m="clr-namespace:XApplication.Models.Weather"
+             x:Class="XApplication.Views.WeatherMainPage" Title="{Binding Title}">
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior EventName="Appearing" Command="{Binding AppearingCommand}"/>
+    </ContentPage.Behaviors>
+    <ContentPage.Resources>
+        <Style TargetType="Label" x:Key="Text1">
+            <Setter Property="TextColor" Value="Black"/>
+            <Setter Property="FontSize" Value="Large"/>
+            <Setter Property="FontAttributes" Value="Bold"/>
+            <Setter Property="Margin" Value="0"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid Padding="20" RowSpacing="25">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition Height="auto"/>
+                <RowDefinition/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition Width="auto"/>
+                </Grid.ColumnDefinitions>
+                <StackLayout Orientation="Vertical" HorizontalOptions="StartAndExpand" VerticalOptions="Center" Spacing="0">
+                    <Label Text="{Binding Location.Name,StringFormat='{}{0},'}" Style="{StaticResource Text1}"/>
+                    <Label Text="{Binding Location.Country}" Style="{StaticResource Text1}"/>
+                    <Label Text="{Binding Location.Localtime,StringFormat='{}{0:ddd,dd MMMM}'}" FontSize="Medium"/>
+                </StackLayout>
+                <ImageButton BackgroundColor="Transparent" Source="bin.png" Command="{Binding DeleteCurrentLocationCommand}" Grid.Column="1" VerticalOptions="Start" HorizontalOptions="End"/>
+            </Grid>
+            <Frame Background="{StaticResource BlueGradient}" CornerRadius="15" Grid.Row="1">
+                <Frame.Resources>
+                    <Style TargetType="Label">
+                        <Setter Property="TextColor" Value="White"/>
+                        <Setter Property="FontAttributes" Value="Bold"/>
+                    </Style>
+                </Frame.Resources>
+                <Grid ColumnSpacing="10" RowSpacing="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0" ColumnSpacing="0" RowSpacing="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="auto"/>
+                        </Grid.RowDefinitions>
+                        <Image Source="{Binding Today.Condition.Icon}" Grid.Row="0" WidthRequest="128" HeightRequest="128"/>
+                        <StackLayout Grid.Row="1" Spacing="0">
+                            <Label Text="{Binding Today.Condition.Text}" FontSize="Large"/>
+                            <Label Text="Today" FontSize="Medium"/>
+                        </StackLayout>
+                    </Grid>
+                    <StackLayout Grid.Column="1" Spacing="0">
+                        <Label Text="{Binding Today.TempC,StringFormat='{}{0}°'}" FontSize="72"/>
+                        <Label Text="{Binding Today.FeelslikeC, StringFormat='Feels like {0}°'}" FontSize="Large"/>
+                    </StackLayout>
+                </Grid>
+            </Frame>
+            <Grid Grid.Row="2">
+                <Grid.Resources>
+                    <Style TargetType="Frame">
+                        <Setter Property="BorderColor" Value="Transparent"/>
+                        <Setter Property="BackgroundColor" Value="#e6ecfa"/>
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                    <Style TargetType="StackLayout">
+                        <Setter Property="Margin" Value="10,0"/>
+                        <Setter Property="Orientation" Value="Vertical"/>
+                    </Style>
+                    <Style TargetType="Label">
+                        <Setter Property="HorizontalOptions" Value="Center"/>
+                        <Setter Property="FontSize" Value="Medium"/>
+                        <Setter Property="FontAttributes" Value="Bold"/>
+                    </Style>
+                </Grid.Resources>
+                <StackLayout Grid.Column="0" HorizontalOptions="Start">
+                    <Frame>
+                        <Image Source="humidity.png" WidthRequest="48"/>
+                    </Frame>
+                    <Label Text="{Binding Today.Humidity,StringFormat='{}{0}%'}"/>
+                </StackLayout>
+                <StackLayout Grid.Column="1" HorizontalOptions="Start">
+                    <Frame>
+                        <Image Source="wind.png" WidthRequest="48"/>
+                    </Frame>
+                    <Label Text="{Binding Today.WindKph,StringFormat='{}{0}km/h'}"/>
+                </StackLayout>
+                <StackLayout Grid.Column="2" HorizontalOptions="Start">
+                    <Frame>
+                        <Image Source="pressure.png" WidthRequest="48"/>
+                    </Frame>
+                    <Label Text="{Binding Today.PressureIn,StringFormat='{}{0}In'}"/>
+                </StackLayout>
+            </Grid>
+            <StackLayout Orientation="Horizontal" Grid.Row="3">
+                <Label Text="Today" VerticalOptions="Center" FontSize="Large" FontAttributes="Bold" HorizontalOptions="StartAndExpand"/>
+                <Button Text="Next 3 days" Command="{Binding NavigateForecastCommand}" Style="{StaticResource Link}" FontSize="Medium" FontAttributes="Bold" VerticalOptions="Center"/>
+            </StackLayout>
+            <CollectionView Grid.Row="4" ItemsSource="{Binding ForecastHours}" SelectionMode="Single">
+                <CollectionView.ItemsLayout>
+                    <LinearItemsLayout Orientation="Horizontal" ItemSpacing="10"/>
+                </CollectionView.ItemsLayout>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="m:Hour">
+                        <Grid Padding="4" ColumnSpacing="0" RowSpacing="0">
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup Name="CommonStates">
+                                    <VisualState Name="Selected">
+                                        <VisualState.Setters>
+                                            <Setter Property="BackgroundColor" Value="Transparent"/>
+                                            <Setter Property="Background" TargetName="Frame1" Value="{StaticResource PurpleGradient}" />
+                                            <Setter Property="Opacity" TargetName="Frame1" Value="1"/>
+                                        </VisualState.Setters>
+                                    </VisualState>
+                                    <VisualState Name="Normal"/>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <Frame BackgroundColor="#e6ecfa" CornerRadius="32" Padding="10" x:Name="Frame1">
+                                <StackLayout Spacing="2" VerticalOptions="CenterAndExpand">
+                                    <Label Text="{Binding Time, StringFormat='{}{0:HH:mm}'}" HorizontalOptions="Center"/>
+                                    <Image WidthRequest="48" HeightRequest="48" Source="{Binding Condition.Icon}" HorizontalOptions="Center" Aspect="AspectFit"/>
+                                    <Label Text="{Binding TempC,StringFormat='{}{0}°'}" FontAttributes="Bold" FontSize="Medium" HorizontalOptions="Center"/>
+                                </StackLayout>
+                            </Frame>
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+            <ActivityIndicator IsRunning="{Binding IsBusy}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

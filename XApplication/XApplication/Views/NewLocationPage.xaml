@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:XApplication.ViewModels" 
+             xmlns:m="clr-namespace:XApplication.Models.Weather"
+             x:Class="XApplication.Views.NewLocationPage">
+    <ContentPage.BindingContext>
+        <vm:NewLocationViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <StackLayout>
+                <SearchBar Placeholder="Pass city name or latitude and longitude..." SearchCommand="{Binding SearchCommand}" Text="{Binding SearchRequest,Mode=TwoWay}"  CancelButtonColor="{StaticResource Blue}"/>
+                <CollectionView ItemsSource="{Binding SearchResults}" SelectedItem="{Binding SelectedLocation}" IsGrouped="True" SelectionMode="Single" VerticalOptions="StartAndExpand">
+                    <CollectionView.GroupHeaderTemplate>
+                        <DataTemplate>
+                            <Label Text="{Binding Key}" FontSize="Medium" Background="#ecf0f1" Padding="10"/>
+                        </DataTemplate>
+                    </CollectionView.GroupHeaderTemplate>
+                    <CollectionView.EmptyView>
+                        <Grid>
+                            <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                                <Image Source="box.png" WidthRequest="128" HeightRequest="128"/>
+                                <Label Text="No results found..." FontSize="Large" HorizontalOptions="Center"/>
+                            </StackLayout>
+                        </Grid>
+                    </CollectionView.EmptyView>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Frame Padding="10">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding Name}" FontSize="Large" HorizontalOptions="StartAndExpand" LineBreakMode="WordWrap"/>
+                                        <ImageButton Source="more.png" WidthRequest="32" Padding="5" BackgroundColor="Transparent" Command="{Binding Source={RelativeSource AncestorType={x:Type vm:NewLocationViewModel}},Path=ShowLocationDetailsCommand}" CommandParameter="{Binding .}"/>
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Button Text="Add location" Command="{Binding AddNewLocationCommand}"/>
+            </StackLayout>
+            <ActivityIndicator VerticalOptions="Center" HorizontalOptions="Center" IsRunning="{Binding IsBusy}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

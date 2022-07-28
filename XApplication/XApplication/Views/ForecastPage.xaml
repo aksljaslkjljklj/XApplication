@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             xmlns:vm="clr-namespace:XApplication.ViewModels" 
+             xmlns:m="clr-namespace:XApplication.Models.Weather" 
+             xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+             Shell.PresentationMode="ModalAnimated"
+             x:Class="XApplication.Views.ForecastPage" Background="{StaticResource BlueGradient}">
+    <ContentPage.Behaviors>
+        <xct:EventToCommandBehavior EventName="Appearing" Command="{Binding AppearingCommand}"/>
+    </ContentPage.Behaviors>
+    <ContentPage.BindingContext>
+        <vm:ForecastViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="1.5*"/>
+                </Grid.RowDefinitions>
+                <Frame Grid.Row="1" HasShadow="False" xct:CornerRadiusEffect.CornerRadius="45,45,0,0"/>
+            </Grid>
+            <Grid Padding="15" RowSpacing="25">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <ImageButton Source="previous.png" WidthRequest="32" HeightRequest="32" HorizontalOptions="Start" VerticalOptions="Start" BackgroundColor="Transparent" Grid.Row="0" Command="{Binding BackCommand}"/>
+                <CollectionView ItemsSource="{Binding ForecastItems}" SelectionMode="Single" SelectedItem="{Binding SelectedDay}" Grid.Row="1" HeightRequest="125">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Horizontal"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="m:Forecastday">
+                            <Grid Padding="5">
+                                <VisualStateManager.VisualStateGroups>
+                                    <VisualStateGroup Name="CommonStates">
+                                        <VisualState Name="Selected">
+                                            <VisualState.Setters>
+                                                <Setter Property="BackgroundColor" Value="Transparent"/>
+                                                <Setter Property="Background" TargetName="Frame1" Value="White" />
+                                                <Setter Property="Opacity" TargetName="Frame1" Value="1"/>
+                                            </VisualState.Setters>
+                                        </VisualState>
+                                        <VisualState Name="Normal"/>
+                                    </VisualStateGroup>
+                                </VisualStateManager.VisualStateGroups>
+                                <Frame x:Name="Frame1" CornerRadius="45" Background="White" Opacity="0.45"/>
+                                <Frame Padding="10,0" BackgroundColor="Transparent">
+                                    <StackLayout Spacing="2">
+                                        <Image WidthRequest="36" HeightRequest="36" HorizontalOptions="Center" Source="{Binding Day.Condition.Icon}"/>
+                                        <Label Text="{Binding Date,StringFormat='{}{0:dd}'}" FontSize="28" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                        <Label Text="{Binding Date,StringFormat='{}{0:ddd}'}" FontSize="Medium" FontAttributes="Bold" HorizontalOptions="Center"/>
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate> 
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+                <Frame Grid.Row="2" Background="{StaticResource BlueGradient}" CornerRadius="30" BindingContext="{Binding SelectedDay}">
+                    <Grid>
+                        <StackLayout Orientation="Vertical">
+                            <Image HeightRequest="128" WidthRequest="128" Source="{Binding Day.Condition.Icon}"/>
+                                <Label Text="{Binding Day.Condition.Text}" TextColor="White" FontAttributes="Bold" LineBreakMode="WordWrap" FontSize="Large">
+                                </Label>
+                        </StackLayout>
+                        <StackLayout Orientation="Vertical" Grid.Column="1">
+                            <Label Text="{Binding Day.MaxtempC,StringFormat='Day {0}°'}" FontSize="52" TextColor="White" FontAttributes="Bold"/>
+                            <Label Text="{Binding Day.MintempC,StringFormat='Night {0}°'}" TextColor="White" FontAttributes="Bold" FontSize="Large"/>
+                        </StackLayout>
+                    </Grid>
+                </Frame>
+                <CollectionView BindingContext="{Binding SelectedDay,Mode=TwoWay}" ItemsSource="{Binding Hour}" Grid.Row="3">
+                    <CollectionView.ItemsLayout>
+                        <LinearItemsLayout Orientation="Vertical"/>
+                    </CollectionView.ItemsLayout>
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="m:Hour">
+                            <Grid Padding="5">
+                                <Frame BackgroundColor="WhiteSmoke" Padding="10" CornerRadius="15">
+                                    <StackLayout Orientation="Horizontal" Spacing="10">
+                                        <Label Text="{Binding Time,StringFormat='{}{0:HH:mm}'}" VerticalOptions="CenterAndExpand" FontSize="Medium"/>
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="EndAndExpand" VerticalOptions="Center">
+                                            <Label Text="{Binding DewpointC,StringFormat='{}{0}°/'}" FontAttributes="Bold" VerticalOptions="CenterAndExpand" FontSize="Large"/>
+                                            <Label Text="{Binding HeatindexC,StringFormat='{}{0}°'}" FontSize="Medium" FontAttributes="Bold" VerticalOptions="End"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Vertical" HorizontalOptions="End" WidthRequest="45">
+                                            <Image Source="{Binding Condition.Icon}" WidthRequest="48" HeightRequest="48" HorizontalOptions="Center"/>
+                                            <Label Text="{Binding Condition.Text}" HorizontalOptions="Center" LineBreakMode="WordWrap"/>
+                                        </StackLayout>
+                                    </StackLayout>
+                                </Frame>
+                            </Grid>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+                </CollectionView>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
